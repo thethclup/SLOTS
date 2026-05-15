@@ -1,20 +1,43 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Slots Snowy
 
-# Run and deploy your AI Studio app
+Slots Snowy is a modern, premium, mobile-first web game featuring snowy winter-themed slot mechanics and trustless reward orchestration. It leverages ERC-8021 for deep on-chain transaction attribution and ERC-8004 for agentic trustless verifications.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/e2d2bc43-08dc-4ffe-b1e7-45c5cfb95da9
+- **Winter / Neon Aesthetic**: A beautiful casino aesthetic with satisfying gameplay and juicy animations.
+- **On-chain Integration**: Powered by Base Mainnet. Records biggest wins using SIWE (Sign-In with Ethereum) signatures. 
+- **ERC-8004 Trustless Agents**: Implements agentic verifications for provably fair spin outcomes.
+- **ERC-8021 Transaction Attribution**: Full tracking of builder and campaign attributions on-chain.
+- **MCP Endpoint**: Embedded Model Context Protocol (MCP) server integration for orchestration tasks.
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend**: React, Vite, Tailwind CSS, Framer Motion
+- **Web3**: Wagmi, Viem (Base chain)
+- **Agent Orchestrator**: Supports automated A2A and MCP interactions.
 
+## Agent Information
+
+The platform hosts an active ERC-8004 compatible AI Agent named **Slots Snowy Orchestrator**. 
+You can view the agent capabilities via the `.well-known/agent-card.json` endpoint or query the agent directly via `/api/agent` and `/api/mcp`.
+
+## Getting Started
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Build for production:
+   ```bash
+   npm run build
+   ```
+
+## License
+
+MIT
