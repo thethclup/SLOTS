@@ -31,75 +31,64 @@ const TOOLS = [
   }
 ];
 
-function handleJsonRpc(body: any) {
-  if (body.method === 'initialize') {
-    return {
-      protocolVersion: "2024-11-05",
-      capabilities: { tools: {}, prompts: {}, resources: {} },
-      serverInfo: { name: WORKER_NAME, version: WORKER_VERSION }
-    };
-  }
-  if (body.method === 'tools/list') {
-    return { tools: TOOLS };
-  }
-  if (body.method === 'tools/call') {
-    const { name, arguments: args } = body.params || {};
-    return {
-      content: [{ type: 'text', text: `Simulated execution of ${name}` }],
-      isError: false
-    };
-  }
-  if (body.method === 'prompts/list') {
-    return { prompts: [] };
-  }
-  if (body.method === 'resources/list') {
-    return { resources: [] };
-  }
-  
-  // existing logic fallback
-  const cmd = (body.action || body.command || body.task || "").toLowerCase();
-  let result: any = {};
-  switch (cmd) {
-    case "status":
-    case "ping":
-      result = { status: "online", agent: WORKER_NAME, message: "Reels are frozen and ready to spin!" };
-      break;
-    case "execute":
-      result = { success: true, executed: body.params || body.command, executedAt: new Date().toISOString(), message: "Slot spin executed successfully" };
-      break;
-    case "get_info":
-      result = { name: WORKER_NAME, wallet: "0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6", platform: "Base", version: WORKER_VERSION };
-      break;
-    default:
-      result = { success: true, message: "Command received", data: body };
-  }
-  return result;
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const result = handleJsonRpc(body);
-    
-    // JSON-RPC response format or old format
-    const responseBody = body.jsonrpc === '2.0' ? {
-      jsonrpc: "2.0",
-      id: body.id,
-      result: result
-    } : {
+
+    if (body.method === 'initialize') {
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        id: body.id,
+        result: {
+          protocolVersion: "2024-11-05",
+          capabilities: { tools: {}, prompts: {}, resources: {} },
+          serverInfo: { name: WORKER_NAME, version: WORKER_VERSION }
+        }
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    if (body.method === 'tools/list') {
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        id: body.id,
+        result: { tools: TOOLS }
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    if (body.method === 'tools/call') {
+      const { name } = body.params || {};
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        id: body.id,
+        result: {
+          content: [{ type: 'text', text: `Simulated execution of ${name}` }],
+          isError: false
+        }
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    if (body.method === 'prompts/list') {
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        id: body.id,
+        result: { prompts: [] }
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    if (body.method === 'resources/list') {
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        id: body.id,
+        result: { resources: [] }
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    return NextResponse.json({
       status: "success",
       agent: WORKER_NAME,
-      response: result,
-      receivedAt: new Date().toISOString()
-    };
-
-    return NextResponse.json(responseBody, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-    });
+      receivedAt: new Date().toISOString(),
+      response: { success: true, message: "Command received", data: body }
+    }, { headers: { 'Access-Control-Allow-Origin': '*' } });
 
   } catch (error) {
     return NextResponse.json({ status: "error", message: "Failed to process request" }, { status: 400 });
@@ -115,13 +104,7 @@ export async function GET() {
     description: "Active MCP server for Slots Snowy Orchestrator",
     capabilities: ["snowy-slot-mechanics", "reward-optimization", "multi-reel-orchestration"],
     timestamp: new Date().toISOString()
-  }, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
-  });
+  }, { headers: { 'Access-Control-Allow-Origin': '*' } });
 }
 
 export async function OPTIONS() {
