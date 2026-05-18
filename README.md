@@ -1,27 +1,47 @@
-# Slots Snowy
+# Slots Snowy Orchestrator
 
 Slots Snowy is a modern, premium, mobile-first web game featuring snowy winter-themed slot mechanics and trustless reward orchestration. It leverages ERC-8021 for deep on-chain transaction attribution and ERC-8004 for agentic trustless verifications.
 
-## Features
+## Project Overview
 
-- **Winter / Neon Aesthetic**: A beautiful casino aesthetic with satisfying gameplay and juicy animations.
-- **On-chain Integration**: Powered by Base Mainnet. Records biggest wins using SIWE (Sign-In with Ethereum) signatures. 
-- **ERC-8004 Trustless Agents**: Implements agentic verifications for provably fair spin outcomes.
-- **ERC-8021 Transaction Attribution**: Full tracking of builder and campaign attributions on-chain.
-- **MCP Endpoint**: Embedded Model Context Protocol (MCP) server integration for orchestration tasks.
+Slots Snowy Orchestrator is a high-performance, ERC-8004 compliant AI agent operating on Base Mainnet. It handles snowy slot mechanics, winter-themed gambling features, reward optimization, and multi-reel orchestration in a cold and strategic manner.
+
+**Live Application:** [Slots Snowy](https://slots-snowy.vercel.app/)
+
+## Capabilities & Skills
+
+- snowy-slot-mechanics
+- winter-themed-gambling
+- reward-optimization
+- multi-reel-orchestration
+- spin-automation
+- jackpot-hunting
+- mcp-command-execution
 
 ## Tech Stack
 
-- **Frontend**: React, Vite, Tailwind CSS, Framer Motion
-- **Web3**: Wagmi, Viem (Base chain)
-- **Agent Orchestrator**: Supports automated A2A and MCP interactions.
+- **Framework:** Next.js 14 (App Router)
+- **Frontend:** TypeScript, Tailwind CSS, Framer Motion
+- **Web3:** Wagmi, Viem (Base Mainnet)
+- **Protocols:** ERC-8004 (Trustless Agents), ERC-8021 (Transaction Attribution)
+- **Agent Orchestrator:** Model Context Protocol (MCP) server integration
 
-## Agent Information
+## Agent Registration
 
-The platform hosts an active ERC-8004 compatible AI Agent named **Slots Snowy Orchestrator**. 
-You can view the agent capabilities via the `.well-known/agent-card.json` endpoint or query the agent directly via `/api/agent` and `/api/mcp`.
+The platform hosts an active ERC-8004 metadata card which can be parsed by supported registrars and A2A protocols. 
+The agent details are exposed securely at the public well-known endpoint:
+`https://slots-snowy.vercel.app/.well-known/agent-card.json`
 
-## Getting Started
+## Model Context Protocol (MCP) Connection Guide
+
+The platform exposes an active MCP JSON-RPC Server at the following endpoint:
+`https://slots-snowy.vercel.app/api/mcp`
+
+The MCP connection allows AI orchestrators, LLMs, and external services to interact dynamically with the Slots environment via defined tools (e.g., fetching statuses, interacting with mechanics). Ensure you send JSON-RPC 2.0 payloads for tool discovery (`tools/list`) and invocation (`tools/call`). 
+
+You can also retrieve basic agent telemetry via the standard discovery endpoint at `/api/agent`.
+
+## Running Locally
 
 1. Install dependencies:
    ```bash
@@ -33,10 +53,7 @@ You can view the agent capabilities via the `.well-known/agent-card.json` endpoi
    npm run dev
    ```
 
-3. Build for production:
-   ```bash
-   npm run build
-   ```
+3. Open `http://localhost:3000` in your browser.
 
 ## License
 
