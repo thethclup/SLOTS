@@ -30,10 +30,13 @@ const TOOLS = [
 ];
 
 export default async function handler(req: any, res: any) {
-  // CORS Headers
+  // CORS & Cache Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -46,7 +49,11 @@ export default async function handler(req: any, res: any) {
       name: WORKER_NAME,
       status: "active",
       description: "Active MCP server for Slots Snowy Orchestrator",
-      capabilities: ["snowy-slot-mechanics", "reward-optimization", "multi-reel-orchestration"],
+      capabilities: {
+        tools: { listChanged: true },
+        prompts: {},
+        resources: {}
+      },
       timestamp: new Date().toISOString()
     });
   }
@@ -54,14 +61,19 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+      const reqId = body.id || null;
       
       if (body.method === 'initialize') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          id: body.id,
+          ...(reqId ? { id: reqId } : {}),
           result: {
             protocolVersion: "2024-11-05",
-            capabilities: { tools: {}, prompts: {}, resources: {} },
+            capabilities: { 
+              tools: { listChanged: true }, 
+              prompts: {}, 
+              resources: {} 
+            },
             serverInfo: { name: WORKER_NAME, version: WORKER_VERSION }
           }
         });
@@ -70,7 +82,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'tools/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          id: body.id,
+          ...(reqId ? { id: reqId } : {}),
           result: { tools: TOOLS }
         });
       }
@@ -79,7 +91,7 @@ export default async function handler(req: any, res: any) {
         const { name } = body.params || {};
         return res.status(200).json({
           jsonrpc: "2.0",
-          id: body.id,
+          ...(reqId ? { id: reqId } : {}),
           result: {
             content: [{ type: 'text', text: `Simulated execution of ${name}` }],
             isError: false
@@ -90,7 +102,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'prompts/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          id: body.id,
+          ...(reqId ? { id: reqId } : {}),
           result: { prompts: [] }
         });
       }
@@ -98,7 +110,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'resources/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          id: body.id,
+          ...(reqId ? { id: reqId } : {}),
           result: { resources: [] }
         });
       }
