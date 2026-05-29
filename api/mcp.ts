@@ -54,6 +54,7 @@ export default async function handler(req: any, res: any) {
         prompts: {},
         resources: {}
       },
+      tools: TOOLS,
       timestamp: new Date().toISOString()
     });
   }
@@ -61,12 +62,12 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-      const reqId = body.id || null;
+      const reqId = body.id !== undefined ? body.id : null;
       
       if (body.method === 'initialize') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          ...(reqId ? { id: reqId } : {}),
+          ...(reqId !== null ? { id: reqId } : {}),
           result: {
             protocolVersion: "2024-11-05",
             capabilities: { 
@@ -82,7 +83,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'tools/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          ...(reqId ? { id: reqId } : {}),
+          ...(reqId !== null ? { id: reqId } : {}),
           result: { tools: TOOLS }
         });
       }
@@ -91,7 +92,7 @@ export default async function handler(req: any, res: any) {
         const { name } = body.params || {};
         return res.status(200).json({
           jsonrpc: "2.0",
-          ...(reqId ? { id: reqId } : {}),
+          ...(reqId !== null ? { id: reqId } : {}),
           result: {
             content: [{ type: 'text', text: `Simulated execution of ${name}` }],
             isError: false
@@ -102,7 +103,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'prompts/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          ...(reqId ? { id: reqId } : {}),
+          ...(reqId !== null ? { id: reqId } : {}),
           result: { prompts: [] }
         });
       }
@@ -110,7 +111,7 @@ export default async function handler(req: any, res: any) {
       if (body.method === 'resources/list') {
         return res.status(200).json({
           jsonrpc: "2.0",
-          ...(reqId ? { id: reqId } : {}),
+          ...(reqId !== null ? { id: reqId } : {}),
           result: { resources: [] }
         });
       }
