@@ -2,8 +2,9 @@
  * ERC-8021: Transaction Attribution
  */
 
-export const BUILDER_CODE = 'bc_q380nd83';
+export const BUILDER_CODE = '[BUILDER_CODE]';
 export const APP_ID = '692279382ba3bc50c6d0cd9f';
+export const ATTRIBUTION_CODE = '[ATTRIBUTION_CODE]';
 
 export function getAttributionPayload(builderCode = BUILDER_CODE, campaignCode = '') {
   return {

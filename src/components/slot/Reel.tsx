@@ -19,7 +19,7 @@ export function Reel({ isSpinning, finalSymbols, delay, onStop }: ReelProps) {
   useEffect(() => {
     // Initialize strip if empty
     if (strip.length === 0) {
-       setStrip([...Array(3).fill(SymbolId.SEVEN)]);
+       setStrip([...Array(3).fill(SymbolId.FROZEN_SEVEN)]);
     }
   }, []);
 
