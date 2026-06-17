@@ -16,6 +16,13 @@ export function getAttributionPayload(builderCode = BUILDER_CODE, campaignCode =
   };
 }
 
+export function getDataSuffix() {
+  // Return the default ERC-8021 suffix for builder codes if you have a hex representation
+  // Since we only have placeholders, this is a mock representation
+  // Actual suffix: "0x07626173656170700080218021802180218021802180218021"
+  return "0x07626173656170700080218021802180218021802180218021";
+}
+
 export function buildAttributedTransaction(baseTx: any, attributionCode: string = '') {
   const payload = getAttributionPayload(BUILDER_CODE, attributionCode);
   return {

@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Slots Snowy",
+  "description": "A festive winter-themed slot machine game featuring progressive jackpots and Base onchain integration.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

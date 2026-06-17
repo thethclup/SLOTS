@@ -2,19 +2,27 @@ import React from 'react';
 import { Web3Provider } from './context/Web3Provider';
 import { SlotMachine } from './components/slot/SlotMachine';
 import { ConnectWallet } from './components/ui/ConnectWallet';
-import { useAccount, useSendTransaction } from 'wagmi';
+import { useAccount, useSendTransaction, useChainId, useSwitchChain } from 'wagmi';
+import { base } from 'wagmi/chains';
 import { parseEther } from 'viem';
 import { Sun, Snowflake } from 'lucide-react';
+import { getDataSuffix } from './lib/erc8021';
 
 function Header() {
   const { isConnected } = useAccount();
   const { sendTransaction } = useSendTransaction();
+  const { switchChain } = useSwitchChain();
+  const chainId = useChainId();
 
   const handleSayGM = () => {
+    if (chainId !== base.id) {
+       switchChain({ chainId: base.id });
+       return;
+    }
     // Contract address to say GM
     sendTransaction({
       to: '0xc35B9997B63B1CE14f8F513f7eddD9a7ABbB33d7',
-      data: '0x' // Sending an empty transaction or if there is an ABI, we'd use encodeFunctionData. Assuming a simple fallback/receive fallback or similar, or just a 0 value tx.
+      data: getDataSuffix() as any
     });
   };
 

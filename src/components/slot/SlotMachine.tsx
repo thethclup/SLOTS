@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Reel } from './Reel';
 import { checkWins, generateReelFrame, SymbolId } from '../../game/SlotEngine';
 import { commitSeed, verifyOutcomeTrustless } from '../../lib/erc8004';
-import { buildAttributedTransaction } from '../../lib/erc8021';
-import { useAccount, useSignMessage, useSendTransaction } from 'wagmi';
+import { buildAttributedTransaction, getDataSuffix } from '../../lib/erc8021';
+import { useAccount, useSignMessage, useSendTransaction, useChainId, useSwitchChain } from 'wagmi';
+import { base } from 'wagmi/chains';
 import { Sun } from 'lucide-react';
 
 export function SlotMachine() {
@@ -21,6 +22,8 @@ export function SlotMachine() {
   const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { sendTransaction } = useSendTransaction();
+  const { switchChain } = useSwitchChain();
+  const chainId = useChainId();
   const [highestWin, setHighestWin] = useState(0);
 
   const reelsStopped = useRef(0);
@@ -93,9 +96,13 @@ export function SlotMachine() {
   };
 
   const handleSayGM = () => {
+    if (chainId !== base.id) {
+       switchChain({ chainId: base.id });
+       return;
+    }
     sendTransaction({
       to: '0xc35B9997B63B1CE14f8F513f7eddD9a7ABbB33d7',
-      data: '0x' 
+      data: getDataSuffix() as any 
     });
   };
 
