@@ -1,29 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Web3Provider } from './context/Web3Provider';
 import { SlotMachine } from './components/slot/SlotMachine';
 import { ConnectWallet } from './components/ui/ConnectWallet';
-import { useAccount, useSendTransaction, useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useSendTransaction, useChainId, useSwitchChain, usePublicClient } from 'wagmi';
 import { base } from 'wagmi/chains';
-import { parseEther } from 'viem';
 import { Sun, Snowflake } from 'lucide-react';
 import { getDataSuffix } from './lib/erc8021';
+import { waitForCanonicalReceipt } from './lib/baseDenim';
+
+const GM_CONTRACT = '0xc35B9997B63B1CE14f8F513f7eddD9a7ABbB33d7' as const;
 
 function Header() {
   const { isConnected } = useAccount();
-  const { sendTransaction } = useSendTransaction();
-  const { switchChain } = useSwitchChain();
+  const { sendTransactionAsync } = useSendTransaction();
+  const { switchChainAsync } = useSwitchChain();
+  const publicClient = usePublicClient({ chainId: base.id });
   const chainId = useChainId();
+  const [gmPending, setGmPending] = useState(false);
 
-  const handleSayGM = () => {
-    if (chainId !== base.id) {
-       switchChain({ chainId: base.id });
-       return;
+  const handleSayGM = async () => {
+    try {
+      setGmPending(true);
+      if (chainId !== base.id) {
+        await switchChainAsync({ chainId: base.id });
+      }
+      const hash = await sendTransactionAsync({
+        chainId: base.id,
+        to: GM_CONTRACT,
+        data: getDataSuffix(),
+      });
+      if (publicClient) {
+        await waitForCanonicalReceipt(publicClient, hash);
+      }
+    } catch (err) {
+      console.error('Say GM failed:', err);
+    } finally {
+      setGmPending(false);
     }
-    // Contract address to say GM
-    sendTransaction({
-      to: '0xc35B9997B63B1CE14f8F513f7eddD9a7ABbB33d7',
-      data: getDataSuffix() as any
-    });
   };
 
   return (
@@ -42,9 +55,10 @@ function Header() {
         {isConnected && (
           <button 
             onClick={handleSayGM}
-            className="px-3 py-2 rounded-lg bg-[#E8A020]/20 hover:bg-[#E8A020]/30 border border-[#E8A020]/40 text-[#E8A020] transition-colors flex items-center gap-2 font-['Cinzel'] text-xs font-bold"
+            disabled={gmPending}
+            className="px-3 py-2 rounded-lg bg-[#E8A020]/20 hover:bg-[#E8A020]/30 border border-[#E8A020]/40 text-[#E8A020] transition-colors flex items-center gap-2 font-['Cinzel'] text-xs font-bold disabled:opacity-50"
           >
-            <Sun size={14} /> SAY GM
+            <Sun size={14} /> {gmPending ? 'CONFIRMING...' : 'SAY GM'}
           </button>
         )}
         <ConnectWallet />
